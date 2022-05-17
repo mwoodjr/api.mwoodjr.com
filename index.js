@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 require('dotenv').config();
 const port = process.env.PORT || 5000
-const db = require('monk')(process.env.MONGO_URL || 'localhost/skyblock');
+const db = require('monk')(process.env.MONGO_URL);
 const fs = require('fs');
 
 const stats = db.get('servers');
@@ -11,7 +11,7 @@ const discordstats = db.get('api')
 app.use(express.json());
 app.use(require('cors')());
 
-app.get('/api/guild', async (req, res) => {
+app.get('/api/deeznuts/guild', async (req, res) => {
     const id = req.query.id;
     if (req.query.token !== process.env.SECRET || !req.query.id) {
         res.status(401);
