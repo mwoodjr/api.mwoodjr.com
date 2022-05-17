@@ -20,6 +20,13 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '16.x'
+      
+      - name: 'Create env file'
+        run: |
+          touch .env
+          echo MONGO_URL=${{ secrets.MONGO_URL }} >> .env
+          echo TOKEN=${{ secrets.TOKEN }} >> .env
+          cat .env
 
       - name: npm install, build, and test
         run: |
