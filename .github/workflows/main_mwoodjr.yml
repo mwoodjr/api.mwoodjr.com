@@ -26,6 +26,7 @@ jobs:
           touch .env
           echo MONGO_URL=${{ secrets.MONGO_URL }} >> .env
           echo TOKEN=${{ secrets.TOKEN }} >> .env
+          echo PORT=5000 >> .env
           cat .env
 
       - name: npm install, build, and test
