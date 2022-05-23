@@ -8,7 +8,7 @@ const db = require('monk')(process.env.MONGO_URL);
 const fs = require('fs');
 
 const stats = db.get('servers');
-const discordstats = db.get('api')
+const votes = db.get('votes')
 
 app.use(express.json());
 app.use(require('cors')());
@@ -54,42 +54,22 @@ app.get('/api/deeznuts/guildcount', async (req, res) => {
     })
 });
 
-app.post('/api/deeznuts', async (req, res) => {
-    if (req.query.token !== process.env.SECRET ) {
-        res.status(401);
-        res.json({
-            error: 401,
-            response: 'Access Denied'
-        });
-    } else {
-        res.status(200)
-        discordstats.insert(req.body)
-        res.json({
-            response: 'POST was successful',
-            data: req.body
-        })
-    }
-})
-
-app.get('/api/deeznuts', async (req, res) => {
-    if (req.query.token !== process.env.SECRET ) {
-        res.status(401);
-        res.json({
-            error: 401,
-            response: 'Access Denied'
-        });
-    } else {
-        res.status(200)
-        discordstats.find().then((data) => {
-            res.json(data)
-        })
-    }
-})
-
 app.post("/api/deeznuts/dblwebhook", webhook.listener(vote => {
-    // vote will be your vote object, e.g
-    console.log(vote)
-    console.log(vote.user) // 395526710101278721 < user who voted\
+    const d = new Date()
+    const findUser = votes.findOne({ userId: vote.user })
+    if (findUser) {
+        votes.findOne({userId: vote.user}).then((data) =>
+        votes.insert({userId: vote.user}, {
+            voteCount: data.voteCount,
+            lastUpvote: d.toISOString() 
+        }))
+    } else {
+        votes.insert({
+            userId: vote.user,
+            voteCount: 1,
+            lastUpvote: d.toISOString()
+        })
+    }
   }))
 
 app.listen(port, () => {
