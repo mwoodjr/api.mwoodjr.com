@@ -27,6 +27,7 @@ jobs:
           envkey_MONGO_URL: ${{ secrets.MONGO_URL }}
           envkey_PORT: 8080
           envkey_TOKEN: ${{ secrets.TOKEN }}
+          envkey_TOPGG: ${{ secrets.TOPGG }}
 
       - name: npm install, build, and test
         run: |

@@ -1,6 +1,8 @@
 const express = require('express');
+const Topgg = require("@top-gg/sdk");
 const app = express();
 require('dotenv').config();
+const webhook = new Topgg.Webhook(process.env.TOPGG)
 const port = process.env.PORT || 8080
 const db = require('monk')(process.env.MONGO_URL);
 const fs = require('fs');
@@ -83,6 +85,12 @@ app.get('/api/deeznuts', async (req, res) => {
         })
     }
 })
+
+app.post("/api/deeznuts/dblwebhook", webhook.listener(vote => {
+    // vote will be your vote object, e.g
+    console.log(vote)
+    console.log(vote.user) // 395526710101278721 < user who voted\
+  }))
 
 app.listen(port, () => {
     console.log(`Server at http://localhost:${port}`)
