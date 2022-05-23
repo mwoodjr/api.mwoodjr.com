@@ -58,11 +58,12 @@ app.post("/api/deeznuts/dblwebhook", webhook.listener(vote => {
     const d = new Date()
     const findUser = votes.findOne({ userId: vote.user })
     if (findUser) {
-        votes.findOne({userId: vote.user}).then((data) =>
-        votes.insert({userId: vote.user}, {
-            voteCount: data.voteCount,
-            lastUpvote: d.toISOString() 
-        }))
+        votes.findOne({userId: vote.user}).then((data) => {
+            votes.insert({userId: vote.user}, {
+                voteCount: data.voteCount + 1,
+                lastUpvote: d.toISOString() 
+            })
+        })
     } else {
         votes.insert({
             userId: vote.user,
