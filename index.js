@@ -15,7 +15,7 @@ app.use(require('cors')());
 
 app.get('/api/deeznuts/guild', async (req, res) => {
     const id = req.query.id;
-    if (req.query.token !== process.env.SECRET || !req.query.id) {
+    if (req.query.token !== process.env.TOKEN || !req.query.id) {
         res.status(401);
         res.json({
             error: 401,
@@ -31,7 +31,7 @@ app.get('/api/deeznuts/guild', async (req, res) => {
 
 app.get('/api/deeznuts/user', async (req, res) => {
     const id = req.query.id;
-    if (req.query.token !== process.env.SECRET || !req.query.id) {
+    if (req.query.token !== process.env.TOKEN || !req.query.id) {
         res.status(401);
         res.json({
             error: 401,
