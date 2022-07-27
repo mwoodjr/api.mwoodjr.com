@@ -55,17 +55,10 @@ app.get('/api/deeznuts/guildcount', async (req, res) => {
 });
 
 app.post("/api/deeznuts/dblwebhook", webhook.listener(vote => {
-    console.log(vote)
-    const findUser = users.findOne({userId: vote.user})
-
-    if (findUser) {
+    try {
         users.findOneAndUpdate({userId: vote.user}, { $inc: { upvoteCount: 1 } })
-    } else {
-        users.insert({
-            userId: vote.user,
-            triggerCount: 0,
-            upvoteCount: 1
-        });
+    } catch {
+        console.log('failed to find and update user data on upvote for user ' + vote.user)
     }
 }))
 
