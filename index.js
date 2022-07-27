@@ -8,7 +8,7 @@ const db = require('monk')(process.env.MONGO_URL);
 const fs = require('fs');
 
 const stats = db.get('servers');
-const votes = db.get('votes')
+const users = db.get('users')
 
 app.use(express.json());
 app.use(require('cors')());
@@ -55,23 +55,19 @@ app.get('/api/deeznuts/guildcount', async (req, res) => {
 });
 
 app.post("/api/deeznuts/dblwebhook", webhook.listener(vote => {
-    const d = new Date()
-    const findUser = votes.findOne({ userId: vote.user })
+    console.log(vote)
+    const findUser = users.findOne({userId: vote.user})
+
     if (findUser) {
-        votes.findOne({userId: vote.user}).then((data) => {
-            votes.update({userId: vote.user}, {
-                voteCount: data.voteCount + 1,
-                lastUpvote: d.toISOString() 
-            })
-        })
+        users.findOneAndUpdate({userId: vote.user}, { $inc: { upvoteCount: 1 } })
     } else {
-        votes.insert({
+        users.insert({
             userId: vote.user,
-            voteCount: 1,
-            lastUpvote: d.toISOString()
-        })
+            triggerCount: 0,
+            upvoteCount: 1
+        });
     }
-  }))
+}))
 
 app.listen(port, () => {
     console.log(`Server at http://localhost:${port}`)
